@@ -8,28 +8,36 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 @Entity
-public class Categoria implements Serializable {
+public class Novel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+	private Integer qtdCapitulos;
 
-	@ManyToMany(mappedBy= "categorias")
-	private List<Novel> novels = new ArrayList<>();
+	@ManyToMany
+	@JoinTable(name="NOVEL_CATEGORIA",
+		joinColumns= @JoinColumn(name = "novel_id"),
+		inverseJoinColumns= @JoinColumn(name = "categoria_id")
+	)
+	private List<Categoria> categorias = new ArrayList<>();
 
-	public Categoria() {
+	public Novel() {
 
 	}
 
-	public Categoria(Integer id, String nome) {
+	public Novel(Integer id, String nome, Integer qtdCapitulos) {
 		super();
 		this.id = id;
 		this.nome = nome;
+		this.qtdCapitulos = qtdCapitulos;
 	}
 
 	public Integer getId() {
@@ -48,12 +56,20 @@ public class Categoria implements Serializable {
 		this.nome = nome;
 	}
 
-	public List<Novel> getNovels() {
-		return novels;
+	public Integer getQtdCapitulos() {
+		return qtdCapitulos;
 	}
 
-	public void setNovels(List<Novel> novels) {
-		this.novels = novels;
+	public void setQtdCapitulos(Integer qtdCapitulos) {
+		this.qtdCapitulos = qtdCapitulos;
+	}
+
+	public List<Categoria> getCategorias() {
+		return categorias;
+	}
+
+	public void setCategorias(List<Categoria> categorias) {
+		this.categorias = categorias;
 	}
 
 	@Override
@@ -72,7 +88,7 @@ public class Categoria implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		Novel other = (Novel) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
